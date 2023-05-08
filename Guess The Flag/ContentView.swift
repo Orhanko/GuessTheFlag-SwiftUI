@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var resultCounter = 0
     @State var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
     @State var correctAnswer = Int.random(in: 0...2)
     @State var showResult = false
-    @State var textResult = ""
-    
+    @State var alertTitle = ""
+    @State var flagButtonName = ""
+    @State var scoreResultText = ""
+    @State var resultCounter = 0
     var body: some View {
         ZStack{
             LinearGradient(gradient: Gradient(colors: [Color(red: 0.1, green: 0.2, blue: 0.45), .gray, Color(red: 0.76, green: 0.15, blue: 0.26)]), startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -32,10 +33,10 @@ struct ContentView: View {
                         Text(countries[correctAnswer])
                             .foregroundColor(.primary)
                             .font(.largeTitle.weight(.semibold))
-                            
                     }
                     ForEach(0..<3) { number in
                         Button{
+                            flagButtonName = countries[number]
                             flagButton(number)
                         } label: {
                             Image(countries[number])
@@ -55,31 +56,34 @@ struct ContentView: View {
                     .font(.title.bold())
                     .foregroundColor(.white)
                 Spacer()
-            }.alert(textResult, isPresented: $showResult) {
+            }.alert(alertTitle, isPresented: $showResult) {
             Button("Continue", action: reset)
         } message: {
-            Text("Your score is: \(resultCounter)")
+            Text(scoreResultText)
         }.padding()
             
         }.ignoresSafeArea()
     }
     func flagButton(_ number: Int){
         if number == correctAnswer{
-            textResult = "Correct!"
+            alertTitle = "Correct!"
             resultCounter += 1
+            scoreResultText = "Your score is: \(resultCounter)"
         }else{
-            textResult = "Wrong!"
+            alertTitle = "Wrong!"
+            scoreResultText =
+            """
+            You tapped tha flag of \(flagButtonName)
+            Your score is: \(resultCounter)
+            """
         }
         showResult = true
+        
     }
-    
-    
     func reset(){
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
     }
-
-        
 }
 
 
